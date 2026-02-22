@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= form.name %> - Submissions</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; min-height: 100vh; }
+    .navbar { background: white; padding: 15px 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 24px; font-weight: bold; color: #6366f1; }
+    .nav-right a { color: #666; text-decoration: none; margin-left: 20px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 30px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    h1 { color: #333; }
+    .btn { padding: 12px 24px; background: #6366f1; color: white; text-decoration: none; border-radius: 6px; border: none; cursor: pointer; }
+    .btn:hover { background: #4f46e5; }
+    .btn-secondary { background: #f3f4f6; color: #333; }
+    .card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .form-url { background: #f3f4f6; padding: 15px; border-radius: 8px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+    .form-url code { font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+    th { color: #666; font-weight: 500; background: #f9fafb; }
+    tr:hover { background: #f9fafb; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #666; }
+    .json-preview { background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-family: monospace; font-size: 13px; }
+    .submission-row { cursor: pointer; }
+    .submission-detail { display: none; background: #f9fafb; }
+    .submission-detail td { padding: 20px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">SponsorForm</div>
+    <div class="nav-right">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <h1><%= form.name %></h1>
+      <a href="/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
+
+    <div class="card">
+      <div class="form-url">
+        <code id="formUrl">/sponsor/<%= form.slug %></code>
+        <button class="btn" onclick="copyUrl()">Copy Link</button>
+      </div>
+
+      <h3 style="margin-bottom: 20px;">Submissions (<%= submissions.length %>)</h3>
+
+      <% if (submissions.length === 0) { %>
+        <div class="empty-state">
+          <p>No submissions yet</p>
+          <p style="margin-top: 10px; font-size: 14px;">Share the form link above to start collecting responses</p>
+        </div>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Company</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% submissions.forEach(sub => { %>
+              <tr class="submission-row" onclick="toggleDetail('<%= sub.id %>')">
+                <td>#<%= sub.id %></td>
+                <td><%= new Date(sub.created_at).toLocaleDateString() %></td>
+                <td><%= sub.data.company_name || 'N/A' %></td>
+                <td><%= sub.data.contact_email || 'N/A' %></td>
+                <td><button class="btn btn-secondary">View JSON</button></td>
+              </tr>
+              <tr class="submission-detail" id="detail-<%= sub.id %>">
+                <td colspan="5">
+                  <pre class="json-preview"><%= JSON.stringify(sub.data, null, 2) %></pre>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom: 15px;">API Endpoint</h3>
+      <p style="margin-bottom: 15px; color: #666;">Retrieve submissions programmatically:</p>
+      <pre class="json-preview">GET /api/submissions?form_id=<%= form.id %>
+Authorization: Bearer YOUR_API_TOKEN</pre>
+    </div>
+  </div>
+
+  <script>
+    function copyUrl() {
+      const url = window.location.origin + document.getElementById('formUrl').textContent;
+      navigator.clipboard.writeText(url);
+      alert('Form URL copied to clipboard!');
+    }
+    
+    function toggleDetail(id) {
+      const el = document.getElementById('detail-' + id);
+      el.style.display = el.style.display === 'table-row' ? 'none' : 'table-row';
+    }
+  </script>
+</body>
+</html>

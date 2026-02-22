@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation - SponsorForm</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    h1 { margin-bottom: 10px; }
+    .subtitle { color: #666; margin-bottom: 40px; }
+    h2 { margin: 40px 0 20px; padding-bottom: 10px; border-bottom: 2px solid #e5e7eb; }
+    h3 { margin: 30px 0 15px; color: #555; }
+    p { margin-bottom: 15px; }
+    code { background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-family: 'Monaco', 'Menlo', monospace; font-size: 14px; }
+    pre { background: #1e293b; color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; margin: 20px 0; }
+    pre code { background: none; padding: 0; color: inherit; }
+    .endpoint { background: #f9fafb; border-left: 4px solid #6366f1; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+    .method { display: inline-block; padding: 4px 12px; background: #6366f1; color: white; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px; }
+    .url { font-family: monospace; font-size: 16px; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e5e7eb; }
+    th { background: #f9fafb; font-weight: 600; }
+    .note { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+    nav { padding: 20px 0; border-bottom: 1px solid #eee; margin-bottom: 40px; }
+    nav .container { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+    .logo { font-size: 24px; font-weight: bold; color: #6366f1; }
+    .nav-links a { margin-left: 20px; text-decoration: none; color: #666; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <div class="logo">SponsorForm</div>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/login">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>API Documentation</h1>
+    <p class="subtitle">Integrate SponsorForm with your existing workflows</p>
+
+    <h2>Authentication</h2>
+    <p>All API requests require authentication using a Bearer token. Get your token by logging in and copying it from your account settings.</p>
+    
+    <pre><code>Authorization: Bearer YOUR_API_TOKEN</code></pre>
+
+    <h2>Endpoints</h2>
+
+    <h3>List Your Forms</h3>
+    <div class="endpoint">
+      <span class="method">GET</span>
+      <span class="url">/api/forms</span>
+    </div>
+    <p>Returns a list of all forms created by your account.</p>
+    
+    <pre><code>{
+  "forms": [
+    {
+      "id": 1,
+      "name": "Q1 2026 Sponsors",
+      "slug": "a3f7b2d9",
+      "created_at": "2026-02-21T10:00:00.000Z"
+    }
+  ]
+}</code></pre>
+
+    <h3>Get Form Submissions</h3>
+    <div class="endpoint">
+      <span class="method">GET</span>
+      <span class="url">/api/submissions?form_id=123</span>
+    </div>
+    <p>Retrieve all submissions for a specific form as JSON.</p>
+    
+    <table>
+      <tr>
+        <th>Parameter</th>
+        <th>Type</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>form_id</td>
+        <td>integer</td>
+        <td>Yes</td>
+        <td>The ID of your form</td>
+      </tr>
+    </table>
+
+    <pre><code>{
+  "form": {
+    "id": 1,
+    "name": "Q1 2026 Sponsors",
+    "slug": "a3f7b2d9"
+  },
+  "submissions": [
+    {
+      "id": 1,
+      "data": {
+        "company_name": "Acme Corp",
+        "contact_email": "sponsor@acme.com",
+        "logo_url": "https://acme.com/logo.png",
+        "ad_copy": "Check out Acme Corp for all your..."
+      },
+      "created_at": "2026-02-21T15:30:00.000Z"
+    }
+  ]
+}</code></pre>
+
+    <h2>Webhooks (Pro)</h2>
+    <p>Pro users can configure webhook URLs for their forms. When a sponsor submits the form, we'll POST the data to your webhook endpoint.</p>
+    
+    <div class="note">
+      <strong>Note:</strong> Webhooks are only available on the Pro plan ($9/month).
+    </div>
+
+    <h3>Webhook Payload</h3>
+    <pre><code>{
+  "form_id": 1,
+  "data": {
+    "company_name": "Acme Corp",
+    "contact_email": "sponsor@acme.com",
+    "logo_url": "https://acme.com/logo.png",
+    "ad_copy": "Check out Acme Corp..."
+  },
+  "timestamp": "2026-02-21T15:30:00.000Z"
+}</code></pre>
+
+    <h3>Setting Up Webhooks</h3>
+    <ol style="margin: 20px 0; padding-left: 30px;">
+      <li>Create or edit a form</li>
+      <li>Enter your webhook URL in the "Webhook URL" field</li>
+      <li>We'll send a POST request to that URL for every new submission</li>
+    </ol>
+
+    <h2>Example: cURL</h2>
+    <pre><code># Get your forms
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  https://your-domain.com/api/forms
+
+# Get submissions for a form
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  "https://your-domain.com/api/submissions?form_id=1"</code></pre>
+
+    <h2>Example: JavaScript</h2>
+    <pre><code>const response = await fetch('/api/submissions?form_id=1', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+
+const { submissions } = await response.json();
+console.log(submissions);</code></pre>
+
+    <h2>Rate Limits</h2>
+    <p>API requests are limited to 100 requests per minute per account.</p>
+
+    <h2>Support</h2>
+    <p>Questions? Email us at support@sponsorform.io</p>
+  </div>
+</body>
+</html>

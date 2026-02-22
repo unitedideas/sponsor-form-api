@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Form - SponsorForm</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; min-height: 100vh; }
+    .navbar { background: white; padding: 15px 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 24px; font-weight: bold; color: #6366f1; }
+    .nav-right a { color: #666; text-decoration: none; margin-left: 20px; }
+    .container { max-width: 800px; margin: 0 auto; padding: 30px; }
+    .card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    h1 { margin-bottom: 30px; color: #333; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
+    input[type="text"], input[type="url"] { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+    input:focus { outline: none; border-color: #6366f1; }
+    .fields-section { margin-top: 30px; }
+    .field-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: #f9fafb; padding: 15px; border-radius: 8px; }
+    .field-row input { flex: 2; }
+    .field-row select { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+    .field-row button { background: #fee2e2; color: #dc2626; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; }
+    .btn { padding: 12px 24px; background: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    .btn:hover { background: #4f46e5; }
+    .btn-secondary { background: #f3f4f6; color: #333; margin-right: 10px; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .required-checkbox { display: flex; align-items: center; gap: 8px; }
+    .help-text { color: #666; font-size: 14px; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">SponsorForm</div>
+    <div class="nav-right">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h1>Create Sponsor Form</h1>
+      <form id="formBuilder" action="/forms" method="POST">
+        <div class="form-group">
+          <label>Form Name</label>
+          <input type="text" name="name" required placeholder="e.g., Q1 2026 Sponsors">
+          <p class="help-text">This is for your reference only</p>
+        </div>
+
+        <div class="form-group">
+          <label>Webhook URL (Optional)</label>
+          <input type="url" name="webhookUrl" placeholder="https://your-app.com/webhook">
+          <p class="help-text">We'll POST new submissions to this URL (Pro feature)</p>
+        </div>
+
+        <div class="fields-section">
+          <label style="margin-bottom: 15px;">Form Fields</label>
+          <div id="fieldsContainer">
+            <!-- Default fields -->
+            <div class="field-row">
+              <input type="text" value="Company Name" readonly>
+              <select disabled><option>text</option></select>
+              <label class="required-checkbox"><input type="checkbox" checked disabled> Required</label>
+              <input type="hidden" name="fields[]" value='{"name":"company_name","type":"text","label":"Company Name","required":true}'>
+            </div>
+            <div class="field-row">
+              <input type="text" value="Contact Email" readonly>
+              <select disabled><option>email</option></select>
+              <label class="required-checkbox"><input type="checkbox" checked disabled> Required</label>
+              <input type="hidden" name="fields[]" value='{"name":"contact_email","type":"email","label":"Contact Email","required":true}'>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="addField()">+ Add Field</button>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; gap: 10px;">
+          <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn">Create Form</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let fieldCount = 0;
+    
+    function addField() {
+      fieldCount++;
+      const container = document.getElementById('fieldsContainer');
+      const row = document.createElement('div');
+      row.className = 'field-row';
+      row.innerHTML = `
+        <input type="text" placeholder="Field Label" id="label${fieldCount}" required onchange="updateField(${fieldCount})">
+        <select id="type${fieldCount}" onchange="updateField(${fieldCount})">
+          <option value="text">Text</option>
+          <option value="email">Email</option>
+          <option value="url">URL</option>
+          <option value="textarea">Textarea</option>
+        </select>
+        <label class="required-checkbox">
+          <input type="checkbox" id="req${fieldCount}" onchange="updateField(${fieldCount})"> Required
+        </label>
+        <button type="button" onclick="this.parentElement.remove()">Remove</button>
+        <input type="hidden" name="fields[]" id="field${fieldCount}">
+      `;
+      container.appendChild(row);
+    }
+    
+    function updateField(id) {
+      const label = document.getElementById(`label${id}`).value;
+      const type = document.getElementById(`type${id}`).value;
+      const required = document.getElementById(`req${id}`).checked;
+      const name = label.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+      document.getElementById(`field${id}`).value = JSON.stringify({ name, type, label, required });
+    }
+  </script>
+</body>
+</html>

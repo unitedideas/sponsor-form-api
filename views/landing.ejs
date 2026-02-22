@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SponsorForm - Collect Sponsor Data via API</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    nav { padding: 20px 0; border-bottom: 1px solid #eee; }
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 24px; font-weight: bold; color: #6366f1; }
+    .nav-links a { margin-left: 20px; text-decoration: none; color: #666; }
+    .nav-links a:hover { color: #6366f1; }
+    .btn { display: inline-block; padding: 12px 24px; background: #6366f1; color: white; text-decoration: none; border-radius: 6px; border: none; cursor: pointer; font-size: 16px; }
+    .btn:hover { background: #4f46e5; }
+    .btn-secondary { background: #f3f4f6; color: #333; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .hero { text-align: center; padding: 80px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .hero h1 { font-size: 48px; margin-bottom: 20px; }
+    .hero p { font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto 30px; }
+    .features { padding: 80px 0; }
+    .features h2 { text-align: center; margin-bottom: 50px; font-size: 36px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+    .feature { text-align: center; padding: 30px; }
+    .feature-icon { font-size: 48px; margin-bottom: 20px; }
+    .feature h3 { margin-bottom: 10px; font-size: 24px; }
+    .pricing { padding: 80px 0; background: #f9fafb; }
+    .pricing h2 { text-align: center; margin-bottom: 50px; font-size: 36px; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 800px; margin: 0 auto; }
+    .pricing-card { background: white; padding: 40px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .pricing-card h3 { font-size: 28px; margin-bottom: 10px; }
+    .price { font-size: 48px; font-weight: bold; color: #6366f1; margin: 20px 0; }
+    .price span { font-size: 16px; color: #666; }
+    .pricing-card ul { list-style: none; margin: 30px 0; }
+    .pricing-card li { padding: 10px 0; border-bottom: 1px solid #eee; }
+    .pricing-card.pro { border: 2px solid #6366f1; }
+    .how-it-works { padding: 80px 0; }
+    .how-it-works h2 { text-align: center; margin-bottom: 50px; font-size: 36px; }
+    .steps { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    .step { text-align: center; max-width: 250px; }
+    .step-number { width: 50px; height: 50px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; margin: 0 auto 20px; }
+    footer { text-align: center; padding: 40px; border-top: 1px solid #eee; color: #666; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <div class="logo">SponsorForm</div>
+      <div class="nav-links">
+        <a href="/api-docs">API Docs</a>
+        <a href="/login">Login</a>
+        <a href="/signup" class="btn">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Collect Sponsor Data, Delivered as JSON</h1>
+    <p>Create custom forms for your podcast sponsors. They fill it out, you get structured data via API. No more messy spreadsheets or email threads.</p>
+    <a href="/signup" class="btn" style="font-size: 18px; padding: 16px 32px;">Start Free</a>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <h2>Everything You Need</h2>
+      <div class="feature-grid">
+        <div class="feature">
+          <div class="feature-icon">📝</div>
+          <h3>Custom Form Builder</h3>
+          <p>Define exactly what info you need from sponsors: company name, logo URL, ad copy, contact details, and more.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔗</div>
+          <h3>Unique Form URLs</h3>
+          <p>Each sponsor gets a unique link. Send it via email, Slack, or embed it anywhere.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📊</div>
+          <h3>JSON API Access</h3>
+          <p>Retrieve all submissions as clean JSON. Integrate with your existing tools and workflows.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">⚡</div>
+          <h3>Webhooks (Pro)</h3>
+          <p>Get real-time notifications when sponsors submit. Connect to Zapier, Make, or your own endpoints.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔒</div>
+          <h3>Simple Dashboard</h3>
+          <p>View all submissions in one place. Export, filter, and manage sponsor data easily.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🚀</div>
+          <h3>Quick Setup</h3>
+          <p>Create your first form in under 2 minutes. No complex configuration needed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how-it-works">
+    <div class="container">
+      <h2>How It Works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Create Your Form</h3>
+          <p>Define the fields you want sponsors to fill out</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Send the Link</h3>
+          <p>Share the unique URL with your sponsors</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Get JSON Data</h3>
+          <p>Access submissions via API or webhook</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing">
+    <div class="container">
+      <h2>Simple Pricing</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Free</h3>
+          <div class="price">$0<span>/month</span></div>
+          <ul>
+            <li>✓ 1 Form</li>
+            <li>✓ 10 Submissions/month</li>
+            <li>✓ JSON API Access</li>
+            <li>✓ Basic Dashboard</li>
+          </ul>
+          <a href="/signup" class="btn btn-secondary">Get Started</a>
+        </div>
+        <div class="pricing-card pro">
+          <h3>Pro</h3>
+          <div class="price">$9<span>/month</span></div>
+          <ul>
+            <li>✓ Unlimited Forms</li>
+            <li>✓ Unlimited Submissions</li>
+            <li>✓ JSON API Access</li>
+            <li>✓ Webhooks</li>
+            <li>✓ Priority Support</li>
+          </ul>
+          <a href="/signup" class="btn">Upgrade to Pro</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 SponsorForm. Built for podcasters and creators.</p>
+  </footer>
+</body>
+</html>
